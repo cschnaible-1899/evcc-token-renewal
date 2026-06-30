@@ -1,9 +1,9 @@
 ARG BUILD_FROM
 FROM ${BUILD_FROM}
 
-RUN apk add --no-cache bash curl python3
+RUN apk add --no-cache curl python3
 
 COPY rootfs /
-RUN chmod +x /usr/bin/run.sh
+RUN chmod a+x /etc/services.d/evcc_token_renewal/run
 
-CMD ["/usr/bin/run.sh"]
+LABEL io.hass.type="addon"

@@ -1,5 +1,5 @@
 name: "EVCC Token Renewal"
-version: "1.0.1"
+version: "1.0.2"
 slug: evcc_token_renewal
 description: "Automatically renews EVCC trial sponsor tokens before they expire"
 url: "https://github.com/cschnaible-1899/evcc-token-renewal"

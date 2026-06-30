@@ -1,4 +1,4 @@
-#!/usr/bin/env bashio
+#!/usr/bin/with-contenv bashio
 # =============================================================================
 # run.sh — EVCC Token Renewal Add-On
 # Runs continuously; wakes once per day at the configured check_time to renew

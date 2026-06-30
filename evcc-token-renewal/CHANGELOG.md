@@ -1,3 +1,9 @@
+## 1.0.2
+
+- Fix: use with-contenv bashio shebang so SUPERVISOR_TOKEN is injected correctly
+- Fix: move script to s6 services.d (proper HA add-on service pattern)
+- Fix: remove CMD override from Dockerfile
+
 ## 1.0.1
 
 - Fix: add build.yaml with HA base images (resolves blank BUILD_FROM docker error)
