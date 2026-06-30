@@ -1,17 +1,17 @@
 name: "EVCC Token Renewal"
-version: "1.0.0"
+version: "1.0.1"
 slug: evcc_token_renewal
 description: "Automatically renews EVCC trial sponsor tokens before they expire"
 url: "https://github.com/cschnaible-1899/evcc-token-renewal"
 arch:
   - aarch64
   - amd64
-  - armv7
 init: false
 hassio_api: true
 hassio_role: manager
 map:
-  - homeassistant:rw
+  - type: homeassistant_config
+    read_only: false
 options:
   evcc_yaml_path: "/homeassistant/evcc.yaml"
   evcc_addon_slug: "49686a9f_evcc"
