@@ -1,0 +1,50 @@
+# =============================================================================
+# EVCC Token Renewal Automation
+# =============================================================================
+# Add this to /config/automations.yaml, OR import it in the HA UI:
+#   Settings → Automations → Import Automation (paste YAML)
+#
+# What it does:
+#   - Runs the renewal script daily at 02:15 AM (low-traffic time)
+#   - Creates a persistent HA notification if the script fails
+#   - Dismisses the notification automatically on the next successful run
+# =============================================================================
+
+- alias: "EVCC Token Renewal Daily Check"
+  description: >
+    Checks whether the EVCC trial sponsor token expires within 2 days.
+    If so, fetches a fresh token from the EVCC docs page, updates
+    /etc/evcc.yaml, and restarts the EVCC add-on.
+  mode: single   # Prevents overlapping runs if a previous run is still executing
+
+  trigger:
+    - platform: time
+      at: "02:15:00"   # Runs once a day at 2:15 AM
+
+  condition: []   # No extra conditions — the script handles all idempotency logic
+
+  action:
+    - service: shell_command.renew_evcc_token
+      response_variable: renewal_result
+
+    - choose:
+        # ── On failure: show a persistent notification ──────────────────────
+        - conditions:
+            - condition: template
+              value_template: "{{ renewal_result.returncode != 0 }}"
+          sequence:
+            - service: persistent_notification.create
+              data:
+                title: "EVCC Token Renewal Failed"
+                message: >
+                  The EVCC sponsor token renewal script exited with code
+                  {{ renewal_result.returncode }}.
+                  Check the log for details:
+                  /config/scripts/evcc_token_renewal.log
+                notification_id: evcc_token_renewal_error
+
+      # ── On success: dismiss any existing failure notification ────────────
+      default:
+        - service: persistent_notification.dismiss
+          data:
+            notification_id: evcc_token_renewal_error

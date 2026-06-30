@@ -1,0 +1,26 @@
+# =============================================================================
+# Append this block to /config/configuration.yaml on your HA machine.
+# After adding it, reload HA configuration:
+#   Settings → System → Restart → Quick Reload
+# Then verify the service appears in Developer Tools → Services.
+# =============================================================================
+
+shell_command:
+  renew_evcc_token: "/bin/bash /config/scripts/renew_evcc_token.sh"
+
+# Optional: sensor that shows the last renewal status in the HA dashboard.
+# State values: ok | warning | error | unknown
+sensor:
+  - platform: command_line
+    name: "EVCC Token Renewal Status"
+    unique_id: evcc_token_renewal_status
+    command: >
+      tail -20 /config/scripts/evcc_token_renewal.log 2>/dev/null
+      | grep -E '\[(INFO|WARN|ERROR)\]'
+      | tail -1
+    scan_interval: 3600
+    value_template: >
+      {% if 'ERROR' in value %}error
+      {% elif 'WARN' in value %}warning
+      {% elif 'complete' in value or 'nothing to do' in value or 'no update needed' in value %}ok
+      {% else %}unknown{% endif %}
